@@ -396,7 +396,7 @@ tbody tr:hover{background:var(--panel-2)}
     <div class="card">
       <div class="card-hd"><h2>What Trade Are You In?</h2></div>
       <div class="card-bd">
-        <div class="note">Pick your trade and we fill in the usual items for you. Then just change the prices to match what <b>you</b> pay. That is the whole setup.</div>
+        <div class="note">Pick your trade and we fill in the usual items for you. <b>The prices below are only starting numbers</b> &mdash; change every one to match what <b>you</b> actually pay. That is the whole setup.</div>
         <div class="trade-grid" id="trades"></div>
       </div>
     </div>
@@ -473,21 +473,21 @@ tbody tr:hover{background:var(--panel-2)}
      manual    = you type it in                                        */
 var TRADES = {
   concrete: { icon:'🧱', name:'Concrete', items:[
-    {n:'Concrete',            b:'volume',    u:'yd',    r:210},
-    {n:'Base Rock',           b:'basetons',  u:'ton',   r:32},
-    {n:'Rebar',               b:'rebar',     u:'bar',   r:9.50},
+    {n:'Concrete',            b:'volume',    u:'yd',    r:185},
+    {n:'Base Rock',           b:'basetons',  u:'ton',   r:28},
+    {n:'Rebar',               b:'rebar',     u:'bar',   r:8.50},
     {n:'Concrete Pump',       b:'manual',    u:'job',   r:0,   q:0},
-    {n:'Demo & Haul Off',     b:'manual',    u:'load',  r:200, q:0},
-    {n:'Crew Labor',          b:'manhours',  u:'hr',    r:30},
-    {n:'Overhead',            b:'manhours',  u:'hr',    r:21}
+    {n:'Demo & Haul Off',     b:'manual',    u:'load',  r:175, q:0},
+    {n:'Crew Labor',          b:'manhours',  u:'hr',    r:28},
+    {n:'Overhead',            b:'manhours',  u:'hr',    r:18}
   ]},
   pavers: { icon:'🧱', name:'Pavers', items:[
     {n:'Pavers',              b:'area',      u:'sqft',  r:4.50},
-    {n:'Base Rock',           b:'basetons',  u:'ton',   r:32},
+    {n:'Base Rock',           b:'basetons',  u:'ton',   r:28},
     {n:'Bedding Sand',        b:'area',      u:'sqft',  r:0.45},
     {n:'Edge Restraint',      b:'perimeter', u:'lf',    r:2.75},
     {n:'Polymeric Sand',      b:'area',      u:'sqft',  r:0.35},
-    {n:'Excavate & Haul Off', b:'manual',    u:'load',  r:200, q:0},
+    {n:'Excavate & Haul Off', b:'manual',    u:'load',  r:175, q:0},
     {n:'Crew Labor',          b:'manhours',  u:'hr',    r:32},
     {n:'Overhead',            b:'manhours',  u:'hr',    r:21}
   ]},
@@ -503,11 +503,11 @@ var TRADES = {
   ]},
   turf: { icon:'🏌', name:'Artificial Turf', items:[
     {n:'Turf',                b:'area',      u:'sqft',  r:3.25},
-    {n:'Base Rock',           b:'basetons',  u:'ton',   r:32},
+    {n:'Base Rock',           b:'basetons',  u:'ton',   r:28},
     {n:'Infill',              b:'area',      u:'sqft',  r:0.40},
     {n:'Nails, Staples, Seam',b:'area',      u:'sqft',  r:0.15},
     {n:'Weed Barrier',        b:'area',      u:'sqft',  r:0.12},
-    {n:'Excavate & Haul Off', b:'manual',    u:'load',  r:200, q:0},
+    {n:'Excavate & Haul Off', b:'manual',    u:'load',  r:175, q:0},
     {n:'Crew Labor',          b:'manhours',  u:'hr',    r:30},
     {n:'Overhead',            b:'manhours',  u:'hr',    r:20}
   ]},
