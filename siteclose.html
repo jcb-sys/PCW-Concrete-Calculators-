@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Quote, close and collect on site. Built for concrete, hardscape and landscape trades.">
+<title>SiteClose</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#14100D; --ground-2:#1E1815; --ground-3:#2A221D;
+  --panel:#FBF7F3; --panel-2:#F1E9E1;
+  --line:#DFD1C4; --line-dark:#332822;
+  --ink:#241C17; --ink-dim:#7A6A5E;
+  --ink-inv:#F6EDE5; --ink-inv-dim:#A08D7E;
+  --accent:#D4551C; --accent-deep:#8F3410; --accent-soft:#FBE5D6;
+  --go:#3F9142; --go-lit:#7BD17F;
+  --gold:#E0A32E; --stop:#B3261E; --info:#3F6F91;
+  --f-disp:'Barlow Condensed','Arial Narrow',sans-serif;
+  --f-body:'Barlow','Helvetica Neue',Arial,sans-serif;
+  --f-mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--f-body);background:var(--ground);color:var(--ink-inv);
+  font-size:15px;line-height:1.45;min-height:100vh}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-disp);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+
+/* TOP BAR */
+.top{background:var(--ground);border-bottom:3px solid var(--accent);
+  padding:9px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.mark{font-family:var(--f-disp);font-size:1.35rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-inv);white-space:nowrap}
+.mark b{color:var(--accent)}
+.top-co{font-size:.66rem;color:var(--ink-inv-dim);letter-spacing:.14em;text-transform:uppercase;
+  font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-logo{height:32px;width:auto;border-radius:4px}
+
+/* NAV */
+nav{display:flex;gap:4px;background:var(--ground-2);padding:6px;border-bottom:1px solid var(--line-dark);
+  position:sticky;top:52px;z-index:29;overflow-x:auto}
+.nb{flex:1;min-width:84px;background:transparent;border:0;border-radius:8px;cursor:pointer;
+  padding:9px 8px;color:var(--ink-inv-dim);font-family:var(--f-body);font-size:.76rem;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;transition:background .15s,color .15s;white-space:nowrap}
+.nb:hover{color:var(--ink-inv);background:var(--ground-3)}
+.nb.on{background:var(--accent);color:#fff}
+
+.wrap{max-width:1180px;margin:0 auto;padding:16px 16px 90px}
+.view{display:none}.view.on{display:block}
+
+/* CARDS */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;color:var(--ink);margin-bottom:12px}
+.card-hd{background:var(--accent);padding:9px 13px;display:flex;align-items:center;
+  justify-content:space-between;gap:10px}
+.card-hd h2{font-size:1rem;color:#fff}
+.card-hd.dark{background:var(--ground-2)}
+.card-hd.dark h2{color:var(--ink-inv)}
+.card-bd{padding:14px;display:flex;flex-direction:column;gap:12px}
+
+/* FIELDS */
+label{display:block;font-size:.64rem;font-weight:700;color:var(--ink-dim);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+input,select,textarea{width:100%;font-family:var(--f-body);font-size:1rem;color:var(--ink);
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 12px}
+input[type=number]{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(212,85,28,.16)}
+input::placeholder{color:#B6A79A}
+select{appearance:none;cursor:pointer;padding-right:34px;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A6A5E' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;background-size:15px}
+textarea{min-height:110px;resize:vertical;font-family:var(--f-mono);font-size:.82rem;line-height:1.6}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.money-in,.pct-in{position:relative}
+.money-in>span,.pct-in>span{position:absolute;top:50%;transform:translateY(-50%);
+  color:var(--ink-dim);font-family:var(--f-mono);font-size:.95rem;pointer-events:none}
+.money-in>span{left:11px}.money-in>input{padding-left:26px}
+.pct-in>span{right:12px}.pct-in>input{padding-right:30px}
+
+/* BUTTONS */
+.btn{font-family:var(--f-disp);font-size:1.05rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--accent);color:#fff;border:0;border-radius:9px;
+  padding:14px 16px;cursor:pointer;width:100%;transition:background .15s}
+.btn:hover{background:var(--accent-deep)}
+.btn.ghost{background:var(--panel-2);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:#E7DCD2}
+.btn.go{background:var(--go)}.btn.go:hover{background:#31702F}
+.btn.dark{background:var(--ground-2);color:var(--ink-inv)}.btn.dark:hover{background:var(--ground-3)}
+.btn.sm{font-size:.85rem;padding:9px 12px;width:auto}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--ground-2);border:1px solid var(--line-dark);border-radius:10px;padding:13px 14px}
+.kpi-l{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-inv-dim)}
+.kpi-v{font-family:var(--f-disp);font-size:2rem;font-weight:700;line-height:1.1;margin-top:3px;
+  font-variant-numeric:tabular-nums;color:var(--ink-inv)}
+.kpi-s{font-family:var(--f-mono);font-size:.7rem;color:var(--ink-inv-dim);margin-top:2px}
+.kpi.hi .kpi-v{color:var(--go-lit)}
+.kpi.warn .kpi-v{color:var(--gold)}
+.kpi.acc .kpi-v{color:#F0A87B}
+
+/* PIPELINE / TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-dim);text-align:left;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--panel-2)}
+.pill{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;padding:4px 9px;border-radius:20px;white-space:nowrap;color:#fff}
+.p-draft{background:#8A7B6E}.p-sent{background:var(--info)}.p-approved{background:var(--go)}
+.p-invoiced{background:var(--gold);color:#2A1C05}.p-paid{background:#1F5E22}.p-lost{background:var(--stop)}
+.empty{text-align:center;padding:34px 18px;color:var(--ink-dim)}
+.empty h3{color:var(--ink);margin-bottom:6px;font-size:1.1rem}
+
+/* LINE ITEMS */
+.li{display:grid;grid-template-columns:22px 1fr 92px 96px 92px;gap:9px;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--line)}
+.li:last-of-type{border-bottom:0}
+.li-hd{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-dim);border-bottom:2px solid var(--line);padding-bottom:6px}
+.li input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);cursor:pointer}
+.li-nm{font-weight:600;font-size:.92rem;line-height:1.25}
+.li-u{font-size:.68rem;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em}
+.li input[type=number]{padding:8px 9px;font-size:.9rem;text-align:right}
+.li-tot{font-family:var(--f-mono);font-weight:600;text-align:right;font-variant-numeric:tabular-nums;font-size:.9rem}
+.li.off{opacity:.4}
+.li-del{background:transparent;border:0;color:var(--ink-dim);cursor:pointer;font-size:1.3rem;
+  line-height:1;padding:0 4px;border-radius:5px}
+.li-del:hover{color:var(--stop);background:var(--panel-2)}
+
+/* TOTALS STRIP */
+.tot{border-radius:10px;padding:13px 15px;text-align:center;margin-top:4px}
+.tot-l{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;opacity:.86}
+.tot-v{font-family:var(--f-disp);font-size:2.3rem;font-weight:700;line-height:1.05;
+  font-variant-numeric:tabular-nums;margin:2px 0}
+.tot-s{font-family:var(--f-mono);font-size:.73rem;opacity:.86}
+.tot.be{background:var(--ground-2);color:var(--ink-inv);border:1px solid var(--line-dark)}
+.tot.sell{background:linear-gradient(150deg,var(--accent),var(--accent-deep));color:#fff}
+.tot.dep{background:linear-gradient(150deg,var(--gold),#B47A16);color:#2A1C05}
+
+/* CLOSE SCREEN */
+.close-scr{position:fixed;inset:0;z-index:80;background:var(--ground);
+  display:none;flex-direction:column;overflow-y:auto}
+.close-scr.on{display:flex}
+.close-hd{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--line-dark);position:sticky;top:0;background:var(--ground);z-index:2}
+.close-bd{padding:18px 16px 34px;max-width:560px;margin:0 auto;width:100%;
+  display:flex;flex-direction:column;gap:14px}
+.close-cust{text-align:center}
+.close-cust .nm{font-family:var(--f-disp);font-size:1.6rem;font-weight:700;text-transform:uppercase}
+.close-cust .ad{font-size:.85rem;color:var(--ink-inv-dim)}
+.big-money{background:linear-gradient(150deg,var(--accent),var(--accent-deep));color:#fff;
+  border-radius:14px;padding:22px;text-align:center}
+.big-money .l{font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.9}
+.big-money .v{font-family:var(--f-disp);font-size:3.6rem;font-weight:700;line-height:1;margin:4px 0;
+  font-variant-numeric:tabular-nums}
+.big-money .s{font-family:var(--f-mono);font-size:.8rem;opacity:.9}
+.collect{background:linear-gradient(150deg,var(--gold),#B47A16);color:#2A1C05;
+  border-radius:14px;padding:20px;text-align:center}
+.collect .l{font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.collect .v{font-family:var(--f-disp);font-size:3rem;font-weight:700;line-height:1;margin:3px 0;
+  font-variant-numeric:tabular-nums}
+.collect .s{font-family:var(--f-mono);font-size:.76rem;opacity:.82}
+.sig-box{background:#fff;border:2px dashed var(--line);border-radius:10px;overflow:hidden}
+#sigpad{display:block;width:100%;height:150px;touch-action:none;cursor:crosshair}
+.sig-ft{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;
+  background:var(--panel-2);border-top:1px solid var(--line)}
+.sig-ft span{font-size:.68rem;color:var(--ink-dim);letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.sig-clr{background:transparent;border:0;color:var(--accent);font-weight:700;font-size:.76rem;
+  cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+
+/* MODAL */
+.scrim{position:fixed;inset:0;background:rgba(10,7,5,.7);z-index:70;display:none}
+.scrim.on{display:block}
+.modal{position:fixed;z-index:71;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(620px,calc(100% - 24px));max-height:88vh;overflow-y:auto;display:none;
+  background:var(--panel);color:var(--ink);border-radius:12px}
+.modal.on{display:block}
+.modal-hd{background:var(--ground);color:var(--ink-inv);padding:13px 16px;display:flex;
+  align-items:center;justify-content:space-between;border-bottom:3px solid var(--accent);
+  position:sticky;top:0;z-index:2}
+.modal-hd h2{font-size:1.15rem}
+.x{background:transparent;border:0;color:var(--ink-inv-dim);font-size:1.7rem;line-height:1;
+  cursor:pointer;padding:0 6px;border-radius:6px}
+.x:hover{color:var(--ink-inv);background:rgba(255,255,255,.09)}
+.modal-bd{padding:16px;display:flex;flex-direction:column;gap:13px}
+
+/* DOC (quote / invoice preview) */
+.doc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px;color:#000}
+.doc-hd{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;
+  border-bottom:2px solid #000;padding-bottom:11px;margin-bottom:13px}
+.doc-co{font-family:var(--f-disp);font-size:1.3rem;font-weight:700;text-transform:uppercase}
+.doc-meta{text-align:right;font-family:var(--f-mono);font-size:.72rem;line-height:1.7}
+.doc h3{font-size:.95rem;margin:14px 0 7px}
+.doc table{font-size:.82rem}
+.doc td,.doc th{padding:7px 6px}
+.doc-tot{margin-top:13px;border-top:2px solid #000;padding-top:11px}
+.doc-tot .r{display:flex;justify-content:space-between;padding:4px 0;font-family:var(--f-mono);font-size:.86rem}
+.doc-tot .r.big{font-size:1.15rem;font-weight:700;border-top:1px solid #ccc;margin-top:6px;padding-top:9px}
+.doc-sig{margin-top:16px;border-top:1px solid #ccc;padding-top:11px}
+.doc-sig img{max-height:66px;display:block}
+.doc-scope{font-size:.82rem;white-space:pre-wrap;line-height:1.6}
+
+/* SETUP */
+.trade-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:9px}
+.trade{background:var(--panel-2);border:2px solid var(--line);border-radius:10px;padding:14px 11px;
+  cursor:pointer;text-align:center;font-family:var(--f-disp);font-size:1rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em;color:var(--ink);transition:border-color .15s,background .15s}
+.trade:hover{border-color:var(--accent)}
+.trade.on{border-color:var(--accent);background:var(--accent-soft)}
+.trade .ic{display:block;font-size:1.5rem;margin-bottom:4px}
+.note{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;
+  padding:11px 13px;font-size:.85rem;color:var(--ink);line-height:1.5}
+.hint{font-size:.75rem;color:var(--ink-dim);line-height:1.45}
+.logo-row{display:flex;align-items:center;gap:11px}
+.logo-prev{height:46px;width:88px;border-radius:6px;border:1px solid var(--line);
+  background:var(--ground);object-fit:contain;padding:3px;flex:none}
+#logo_file{display:none}
+.hidden{display:none !important}
+
+/* STICKY QUOTE BAR */
+.qbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;
+  background:linear-gradient(150deg,var(--accent),var(--accent-deep));color:#fff;
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom));align-items:center;gap:11px}
+.qbar.on{display:flex}
+.qbar-l{flex:1;min-width:0}
+.qbar-l .l{font-size:.56rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;opacity:.86}
+.qbar-l .v{font-family:var(--f-disp);font-size:1.7rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.qbar .btn{width:auto;flex:none;background:#fff;color:var(--accent-deep);padding:12px 18px;font-size:.95rem}
+.qbar .btn:hover{background:#F4E4D9}
+
+/* TOAST */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:90;
+  background:var(--go);color:#fff;padding:11px 20px;border-radius:24px;font-weight:600;
+  font-size:.88rem;display:none;box-shadow:0 4px 18px rgba(0,0,0,.4)}
+.toast.on{display:block}
+
+@media (max-width:720px){
+  body{font-size:16px}
+  .wrap{padding:13px 13px 96px}
+  .g2,.g3{grid-template-columns:1fr}
+  .li{grid-template-columns:20px 1fr 74px;gap:7px 8px}
+  .li-rate,.li-tot{grid-column:2/4}
+  .li-rate{text-align:right}
+  .li .li-tot{border-top:1px dashed var(--line);padding-top:6px}
+  .li-hd{display:none}
+  input,select,textarea{font-size:16px}
+  .big-money .v{font-size:3rem}
+  .collect .v{font-size:2.5rem}
+  nav{top:50px}
+}
+@media print{
+  .top,nav,.qbar,.scrim,.modal-hd,.btn,.toast{display:none !important}
+  body{background:#fff;color:#000}
+  .modal{position:static;transform:none;max-height:none;width:100%;display:block;overflow:visible}
+  .modal-bd{padding:0}
+  .doc{border:0;padding:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+<div class="top">
+  <img id="top_logo" class="top-logo hidden" alt="">
+  <div class="mark">Site<b>Close</b></div>
+  <div class="top-co" id="top_co"></div>
+</div>
+
+<nav>
+  <button class="nb on" type="button" data-v="dash">Dashboard</button>
+  <button class="nb" type="button" data-v="new">New Quote</button>
+  <button class="nb" type="button" data-v="quotes">Quotes</button>
+  <button class="nb" type="button" data-v="setup">My Rates</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- ══ DASHBOARD ══ -->
+  <div class="view on" id="v-dash">
+    <div class="kpis" id="kpis"></div>
+    <div class="card">
+      <div class="card-hd"><h2>Recent Quotes</h2><button class="btn sm ghost" type="button" data-go="new">New Quote</button></div>
+      <div class="card-bd" style="padding:0"><div class="tbl-wrap" id="recent"></div></div>
+    </div>
+  </div>
+
+  <!-- ══ NEW QUOTE ══ -->
+  <div class="view" id="v-new">
+    <div class="card">
+      <div class="card-hd"><h2 id="nq_title">New Quote</h2><span class="pill p-draft" id="nq_status">Draft</span></div>
+      <div class="card-bd">
+        <div class="g2">
+          <div><label for="c_name">Customer Name</label><input type="text" id="c_name" placeholder="John Smith"></div>
+          <div><label for="c_phone">Phone</label><input type="tel" id="c_phone" placeholder="(928) 555-0147"></div>
+        </div>
+        <div><label for="c_addr">Job Address</label><input type="text" id="c_addr" placeholder="1420 Iron Springs Rd, Prescott AZ"></div>
+        <div><label for="c_email">Email (to send the quote)</label><input type="email" id="c_email" placeholder="john@example.com"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2>The Job</h2></div>
+      <div class="card-bd">
+        <div><label for="j_trade">Type of Work</label><select id="j_trade"></select></div>
+        <div class="g3">
+          <div><label for="j_len">Length (ft)</label><input type="number" id="j_len" placeholder="0" inputmode="decimal"></div>
+          <div><label for="j_wid">Width (ft)</label><input type="number" id="j_wid" placeholder="0" inputmode="decimal"></div>
+          <div><label for="j_sqft">Or Sq Ft</label><input type="number" id="j_sqft" placeholder="auto" inputmode="decimal"></div>
+        </div>
+        <div class="g3">
+          <div><label for="j_thk">Depth (in)</label><input type="number" id="j_thk" value="4" inputmode="decimal"></div>
+          <div><label for="j_crew">Crew Size</label><input type="number" id="j_crew" value="4" inputmode="decimal"></div>
+          <div><label for="j_hrs">Hours On Job</label><input type="number" id="j_hrs" value="10" inputmode="decimal"></div>
+        </div>
+        <div class="hint" id="j_summary"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2>What It Costs You</h2><button class="btn sm ghost" type="button" id="add_line">+ Add Item</button></div>
+      <div class="card-bd">
+        <div class="li li-hd"><div></div><div>Item</div><div style="text-align:right">Qty</div><div style="text-align:right">Your Rate</div><div style="text-align:right">Cost</div></div>
+        <div id="lines"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2>Your Price</h2></div>
+      <div class="card-bd">
+        <div class="g2">
+          <div><label for="j_profit">Profit %</label><div class="pct-in"><input type="number" id="j_profit" min="0" max="99" inputmode="decimal"><span>%</span></div></div>
+          <div><label for="j_deposit">Deposit %</label><div class="pct-in"><input type="number" id="j_deposit" min="0" max="100" inputmode="decimal"><span>%</span></div></div>
+        </div>
+        <div class="tot be"><div class="tot-l">Your Cost</div><div class="tot-v" id="t_cost">$0</div><div class="tot-s">What the job costs to build</div></div>
+        <div class="tot sell"><div class="tot-l">Customer Price</div><div class="tot-v" id="t_price">$0</div><div class="tot-s" id="t_persqft">$0.00 / sq ft</div></div>
+        <div class="tot dep"><div class="tot-l">Deposit To Collect</div><div class="tot-v" id="t_dep">$0</div><div class="tot-s" id="t_profit">Profit: $0</div></div>
+        <div><label for="j_notes">Notes For The Customer</label><textarea id="j_notes" placeholder="Scope of work — this shows on the quote."></textarea></div>
+        <button class="btn go" type="button" id="btn_close">Close This Job</button>
+        <div class="btn-row">
+          <button class="btn ghost" type="button" id="btn_save">Save Draft</button>
+          <button class="btn dark" type="button" id="btn_discard">Discard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ QUOTES ══ -->
+  <div class="view" id="v-quotes">
+    <div class="card">
+      <div class="card-hd"><h2>All Quotes</h2>
+        <select id="filter" style="width:auto;padding:7px 30px 7px 10px;font-size:.85rem">
+          <option value="all">All</option><option value="draft">Draft</option>
+          <option value="sent">Sent</option><option value="approved">Approved</option>
+          <option value="invoiced">Invoiced</option><option value="paid">Paid</option>
+          <option value="lost">Lost</option>
+        </select>
+      </div>
+      <div class="card-bd" style="padding:0"><div class="tbl-wrap" id="qlist"></div></div>
+    </div>
+  </div>
+
+  <!-- ══ SETUP ══ -->
+  <div class="view" id="v-setup">
+    <div class="card">
+      <div class="card-hd"><h2>Your Company</h2></div>
+      <div class="card-bd">
+        <div class="g2">
+          <div><label for="s_co">Company Name</label><input type="text" id="s_co" placeholder="Your Company LLC"></div>
+          <div><label for="s_phone">Phone</label><input type="tel" id="s_phone" placeholder="(928) 555-0100"></div>
+        </div>
+        <div class="g2">
+          <div><label for="s_email">Email</label><input type="email" id="s_email" placeholder="you@company.com"></div>
+          <div><label for="s_lic">License / ROC #</label><input type="text" id="s_lic" placeholder="ROC 123456"></div>
+        </div>
+        <div><label>Logo</label>
+          <div class="logo-row">
+            <img class="logo-prev" id="logo_prev" alt="">
+            <button class="btn ghost sm" type="button" id="logo_pick" style="flex:1">Upload Logo</button>
+            <button class="btn ghost sm" type="button" id="logo_clr">Clear</button>
+          </div>
+          <input type="file" id="logo_file" accept="image/*">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2>What Trade Are You In?</h2></div>
+      <div class="card-bd">
+        <div class="note">Pick your trade and we fill in the usual items for you. Then just change the prices to match what <b>you</b> pay. That is the whole setup.</div>
+        <div class="trade-grid" id="trades"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2 id="rb_title">Your Prices</h2><button class="btn sm ghost" type="button" id="add_cat">+ Add Item</button></div>
+      <div class="card-bd">
+        <div class="hint">These are <b>your costs</b> — what you pay. Your profit gets added on top of these, so the customer never sees them.</div>
+        <div id="catalog"></div>
+        <button class="btn ghost" type="button" id="reset_cat">Reset This Trade To Defaults</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2>Job Defaults</h2></div>
+      <div class="card-bd">
+        <div class="g3">
+          <div><label for="s_profit">Profit %</label><div class="pct-in"><input type="number" id="s_profit" inputmode="decimal"><span>%</span></div></div>
+          <div><label for="s_dep">Deposit %</label><div class="pct-in"><input type="number" id="s_dep" inputmode="decimal"><span>%</span></div></div>
+          <div><label for="s_waste">Waste %</label><div class="pct-in"><input type="number" id="s_waste" inputmode="decimal"><span>%</span></div></div>
+        </div>
+        <div><label for="s_terms">Default Scope / Terms</label><textarea id="s_terms" placeholder="Shows on every quote."></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STICKY BAR -->
+<div class="qbar" id="qbar">
+  <div class="qbar-l"><div class="l">Customer Price</div><div class="v" id="qbar_v">$0</div></div>
+  <button class="btn" type="button" id="qbar_btn">Close It</button>
+</div>
+
+<!-- CLOSE SCREEN -->
+<div class="close-scr" id="closer">
+  <div class="close-hd">
+    <button class="btn sm dark" type="button" id="close_back">&larr; Back</button>
+    <div class="mark" style="font-size:1.05rem">Site<b>Close</b></div>
+  </div>
+  <div class="close-bd">
+    <div class="close-cust"><div class="nm" id="cl_name">Customer</div><div class="ad" id="cl_addr"></div></div>
+    <div class="big-money"><div class="l">Total Price</div><div class="v" id="cl_price">$0</div><div class="s" id="cl_sub"></div></div>
+    <div class="collect"><div class="l">Collect Today</div><div class="v" id="cl_dep">$0</div><div class="s" id="cl_depsub"></div></div>
+    <div>
+      <label>Customer Signature</label>
+      <div class="sig-box">
+        <canvas id="sigpad"></canvas>
+        <div class="sig-ft"><span>Sign above to approve</span><button class="sig-clr" type="button" id="sig_clear">Clear</button></div>
+      </div>
+    </div>
+    <button class="btn go" type="button" id="cl_approve">Approved &mdash; Collect Deposit</button>
+    <div class="btn-row">
+      <button class="btn ghost" type="button" id="cl_send">Send Quote</button>
+      <button class="btn dark" type="button" id="cl_lost">Mark Lost</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="scrim" id="scrim"></div>
+<div class="modal" id="modal">
+  <div class="modal-hd"><h2 id="modal_t">Quote</h2><button class="x" type="button" id="modal_x">&times;</button></div>
+  <div class="modal-bd" id="modal_b"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════ TRADE PRESETS ═══════════
+   basis: how the quantity is worked out from the job dimensions
+     area      = square feet          perimeter = linear ft around
+     volume    = cubic yards          basetons  = tons of base rock
+     rebar     = bars (grid + splice) manhours  = crew x hours
+     manual    = you type it in                                        */
+var TRADES = {
+  concrete: { icon:'🧱', name:'Concrete', items:[
+    {n:'Concrete',            b:'volume',    u:'yd',    r:210},
+    {n:'Base Rock',           b:'basetons',  u:'ton',   r:32},
+    {n:'Rebar',               b:'rebar',     u:'bar',   r:9.50},
+    {n:'Concrete Pump',       b:'manual',    u:'job',   r:0,   q:0},
+    {n:'Demo & Haul Off',     b:'manual',    u:'load',  r:200, q:0},
+    {n:'Crew Labor',          b:'manhours',  u:'hr',    r:30},
+    {n:'Overhead',            b:'manhours',  u:'hr',    r:21}
+  ]},
+  pavers: { icon:'🧱', name:'Pavers', items:[
+    {n:'Pavers',              b:'area',      u:'sqft',  r:4.50},
+    {n:'Base Rock',           b:'basetons',  u:'ton',   r:32},
+    {n:'Bedding Sand',        b:'area',      u:'sqft',  r:0.45},
+    {n:'Edge Restraint',      b:'perimeter', u:'lf',    r:2.75},
+    {n:'Polymeric Sand',      b:'area',      u:'sqft',  r:0.35},
+    {n:'Excavate & Haul Off', b:'manual',    u:'load',  r:200, q:0},
+    {n:'Crew Labor',          b:'manhours',  u:'hr',    r:32},
+    {n:'Overhead',            b:'manhours',  u:'hr',    r:21}
+  ]},
+  landscape: { icon:'🌿', name:'Landscaping', items:[
+    {n:'Sod',                 b:'area',      u:'sqft',  r:0.85},
+    {n:'Topsoil',             b:'manual',    u:'yd',    r:45,  q:0},
+    {n:'Mulch / Rock',        b:'manual',    u:'yd',    r:38,  q:0},
+    {n:'Plants & Shrubs',     b:'manual',    u:'ea',    r:35,  q:0},
+    {n:'Irrigation Zone',     b:'manual',    u:'zone',  r:450, q:0},
+    {n:'Edging',              b:'perimeter', u:'lf',    r:3.25},
+    {n:'Crew Labor',          b:'manhours',  u:'hr',    r:28},
+    {n:'Overhead',            b:'manhours',  u:'hr',    r:18}
+  ]},
+  turf: { icon:'🏌', name:'Artificial Turf', items:[
+    {n:'Turf',                b:'area',      u:'sqft',  r:3.25},
+    {n:'Base Rock',           b:'basetons',  u:'ton',   r:32},
+    {n:'Infill',              b:'area',      u:'sqft',  r:0.40},
+    {n:'Nails, Staples, Seam',b:'area',      u:'sqft',  r:0.15},
+    {n:'Weed Barrier',        b:'area',      u:'sqft',  r:0.12},
+    {n:'Excavate & Haul Off', b:'manual',    u:'load',  r:200, q:0},
+    {n:'Crew Labor',          b:'manhours',  u:'hr',    r:30},
+    {n:'Overhead',            b:'manhours',  u:'hr',    r:20}
+  ]},
+  fencing: { icon:'🚧', name:'Fencing', items:[
+    {n:'Fence Material',      b:'perimeter', u:'lf',    r:18},
+    {n:'Posts',               b:'manual',    u:'ea',    r:28,  q:0},
+    {n:'Gates',               b:'manual',    u:'ea',    r:350, q:0},
+    {n:'Concrete Bags',       b:'manual',    u:'bag',   r:7.50,q:0},
+    {n:'Crew Labor',          b:'manhours',  u:'hr',    r:30},
+    {n:'Overhead',            b:'manhours',  u:'hr',    r:20}
+  ]},
+  custom: { icon:'🔧', name:'Build My Own', items:[
+    {n:'Material',            b:'area',      u:'sqft',  r:1},
+    {n:'Crew Labor',          b:'manhours',  u:'hr',    r:30},
+    {n:'Overhead',            b:'manhours',  u:'hr',    r:20}
+  ]}
+};
+var BASES = [
+  ['area','Per sq ft'], ['perimeter','Per linear ft'], ['volume','Concrete yards'],
+  ['basetons','Base rock tons'], ['rebar','Rebar bars'], ['manhours','Per man-hour'], ['manual','I type the qty']
+];
+
+/* ═══════════ STORAGE ═══════════ */
+var KEY = 'siteclose_v1';
+var DB;
+
+function blankDB(){
+  var cat = {};
+  for (var t in TRADES) cat[t] = TRADES[t].items.map(function(i){ return copy(i); });
+  return {
+    co:{ name:'', phone:'', email:'', lic:'', logo:'' },
+    trade:'concrete',
+    cat:cat,
+    def:{ profit:20, deposit:15, waste:10,
+          terms:'Site preparation, forms, reinforcement, place and finish.\nAny excess soil is piled on site per the homeowner.' },
+    quotes:[],
+    seq:1001
+  };
+}
+function copy(o){ return JSON.parse(JSON.stringify(o)); }
+function load(){
+  DB = blankDB();
+  try{
+    var raw = localStorage.getItem(KEY);
+    if (raw){
+      var s = JSON.parse(raw);
+      if (s && typeof s === 'object'){
+        if (s.co)  for (var k in s.co)  DB.co[k] = s.co[k];
+        if (s.def) for (var d in s.def) DB.def[d] = s.def[d];
+        if (s.cat) for (var c in s.cat) if (DB.cat[c]) DB.cat[c] = s.cat[c];
+        if (s.trade && TRADES[s.trade]) DB.trade = s.trade;
+        if (Array.isArray(s.quotes)) DB.quotes = s.quotes;
+        if (s.seq) DB.seq = s.seq;
+      }
+    }
+  }catch(e){}
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){} }
+
+/* ═══════════ HELPERS ═══════════ */
+function $(id){ return document.getElementById(id); }
+function money(n){ return '$' + Math.round(n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function money2(n){ return '$' + (n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function num(id){ return parseFloat($(id).value) || 0; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function niceDate(d){
+  if(!d) return '—';
+  var p = String(d).slice(0,10).split('-');
+  return p.length===3 ? (p[1]+'/'+p[2]+'/'+p[0].slice(2)) : d;
+}
+function toast(msg){
+  var t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._h); t._h = setTimeout(function(){ t.classList.remove('on'); }, 2400);
+}
+
+/* ═══════════ THE ENGINE ═══════════ */
+function jobDims(){
+  var len = num('j_len'), wid = num('j_wid'), ov = num('j_sqft');
+  var area = ov > 0 ? ov : len * wid;
+  var per;
+  if (ov > 0 && !(len > 0 && wid > 0)){ var s = Math.sqrt(area); per = 4 * s; }
+  else per = 2 * (len + wid);
+  return { len:len, wid:wid, area:area, per:per,
+           thk:num('j_thk'), crew:num('j_crew'), hrs:num('j_hrs') };
+}
+
+/* Quantity for one line, from its basis */
+function qtyFor(line, d, waste){
+  switch(line.b){
+    case 'area':      return d.area;
+    case 'perimeter': return d.per;
+    case 'manhours':  return d.crew * d.hrs;
+    case 'volume':    return Math.ceil((d.area * (d.thk/12) / 27) * (1 + waste));
+    case 'basetons':  return d.area > 0 ? (d.area/100) * (d.thk/2) * (1 + waste) : 0;
+    case 'rebar':     return rebarBars(d, waste);
+    default:          return line.q || 0;
+  }
+}
+function rebarBars(d, waste){
+  if (d.area <= 0) return 0;
+  var L = d.len > 0 ? d.len : Math.sqrt(d.area);
+  var W = d.wid > 0 ? d.wid : Math.sqrt(d.area);
+  var spacing = 1.5, barLen = 20, splice = 2;          // 18" o.c. on 20' bars
+  var runsL = Math.floor(W / spacing) + 1;
+  var runsW = Math.floor(L / spacing) + 1;
+  var spL = Math.max(0, Math.ceil(L / barLen) - 1);
+  var spW = Math.max(0, Math.ceil(W / barLen) - 1);
+  var ft = runsL * (L + spL*splice) + runsW * (W + spW*splice);
+  var bars = Math.ceil(ft / barLen);
+  return bars + Math.ceil(bars * waste);
+}
+
+/* ═══════════ NEW QUOTE STATE ═══════════ */
+var draft = null;      // the quote being built
+
+function newDraft(){
+  return { id:'q'+Date.now(), num:DB.seq, trade:DB.trade,
+    cust:{ name:'', phone:'', email:'', addr:'' },
+    dims:{ len:'', wid:'', sqft:'', thk:4, crew:4, hrs:10 },
+    lines:DB.cat[DB.trade].map(function(i){ return copy(i); }).map(function(i){ i.on = true; return i; }),
+    profit:DB.def.profit, deposit:DB.def.deposit,
+    notes:DB.def.terms, status:'draft', created:today(),
+    sig:'', payments:[] };
+}
+
+function draftToForm(){
+  $('c_name').value  = draft.cust.name;  $('c_phone').value = draft.cust.phone;
+  $('c_email').value = draft.cust.email; $('c_addr').value  = draft.cust.addr;
+  $('j_trade').value = draft.trade;
+  $('j_len').value  = draft.dims.len;  $('j_wid').value = draft.dims.wid;
+  $('j_sqft').value = draft.dims.sqft; $('j_thk').value = draft.dims.thk;
+  $('j_crew').value = draft.dims.crew; $('j_hrs').value = draft.dims.hrs;
+  $('j_profit').value = draft.profit;  $('j_deposit').value = draft.deposit;
+  $('j_notes').value  = draft.notes;
+  $('nq_title').textContent = 'Quote #' + draft.num;
+  var st = $('nq_status'); st.className = 'pill p-' + draft.status;
+  st.textContent = draft.status;
+  renderLines();
+  recalc();
+}
+function formToDraft(){
+  draft.cust.name = $('c_name').value;  draft.cust.phone = $('c_phone').value;
+  draft.cust.email = $('c_email').value; draft.cust.addr = $('c_addr').value;
+  draft.dims = { len:$('j_len').value, wid:$('j_wid').value, sqft:$('j_sqft').value,
+                 thk:$('j_thk').value, crew:$('j_crew').value, hrs:$('j_hrs').value };
+  draft.profit = num('j_profit'); draft.deposit = num('j_deposit');
+  draft.notes = $('j_notes').value;
+}
+
+function renderLines(){
+  var box = $('lines'); box.innerHTML = '';
+  draft.lines.forEach(function(line, i){
+    var row = document.createElement('div');
+    row.className = 'li' + (line.on ? '' : ' off');
+    row.innerHTML =
+      '<div><input type="checkbox" ' + (line.on?'checked':'') + ' data-i="'+i+'" data-f="on" aria-label="Include ' + esc(line.n) + '"></div>' +
+      '<div><div class="li-nm">' + esc(line.n) + '</div><div class="li-u" data-u="'+i+'"></div></div>' +
+      '<div><input type="number" class="li-qty" data-i="'+i+'" data-f="q" inputmode="decimal" step="any"></div>' +
+      '<div class="li-rate"><input type="number" value="'+line.r+'" data-i="'+i+'" data-f="r" inputmode="decimal" step="any"></div>' +
+      '<div class="li-tot" data-t="'+i+'">$0</div>';
+    box.appendChild(row);
+  });
+}
+
+function recalc(){
+  if (!draft) return;
+  formToDraft();
+  var d = jobDims(), waste = (DB.def.waste||0)/100, cost = 0;
+
+  draft.lines.forEach(function(line, i){
+    var auto = line.b !== 'manual';
+    var q = qtyFor(line, d, waste);
+    if (!auto) q = line.q || 0;
+    line._q = q;
+    var lt = line.on ? q * (line.r||0) : 0;
+    line._t = lt; cost += lt;
+
+    var qi = document.querySelector('.li-qty[data-i="'+i+'"]');
+    if (qi){
+      qi.readOnly = auto;
+      qi.style.background = auto ? 'var(--panel-2)' : '#fff';
+      if (auto || document.activeElement !== qi){
+        qi.value = auto ? (Math.round(q*100)/100) : (line.q != null ? line.q : '');
+      }
+    }
+    var ue = document.querySelector('[data-u="'+i+'"]');
+    if (ue) ue.textContent = line.u + (auto ? ' · auto' : '');
+    var te = document.querySelector('[data-t="'+i+'"]');
+    if (te) te.textContent = money(lt);
+  });
+
+  var pct = Math.min((draft.profit||0)/100, 0.99);
+  var price = pct > 0 ? cost / (1 - pct) : cost;
+  var dep = price * ((draft.deposit||0)/100);
+  draft._cost = cost; draft._price = price; draft._dep = dep;
+
+  $('t_cost').textContent  = money(cost);
+  $('t_price').textContent = money(price);
+  $('t_dep').textContent   = money(dep);
+  $('t_persqft').textContent = d.area > 0 ? money2(price/d.area) + ' / sq ft' : '—';
+  $('t_profit').textContent  = 'Profit: ' + money(price - cost);
+  $('qbar_v').textContent = money(price);
+  $('j_summary').textContent = d.area > 0
+    ? Math.round(d.area) + ' sq ft · ' + Math.round(d.per) + ' lf around · ' + (d.crew*d.hrs) + ' man-hours'
+    : 'Enter length and width, or square feet.';
+}
+
+/* ═══════════ VIEWS ═══════════ */
+function show(v){
+  document.querySelectorAll('.view').forEach(function(e){ e.classList.remove('on'); });
+  $('v-'+v).classList.add('on');
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.toggle('on', b.dataset.v === v); });
+  $('qbar').classList.toggle('on', v === 'new');
+  window.scrollTo(0,0);
+  if (v === 'dash')   renderDash();
+  if (v === 'quotes') renderQuotes();
+  if (v === 'setup')  renderSetup();
+  if (v === 'new' && !draft){ draft = newDraft(); draftToForm(); }
+}
+
+function renderDash(){
+  var qs = DB.quotes;
+  var sent = qs.filter(function(q){ return q.status !== 'draft'; });
+  var won  = qs.filter(function(q){ return ['approved','invoiced','paid'].indexOf(q.status) >= 0; });
+  var rate = sent.length ? Math.round(won.length / sent.length * 100) : 0;
+  var wonAmt = won.reduce(function(a,q){ return a + (q.price||0); }, 0);
+  var got = qs.reduce(function(a,q){
+    return a + (q.payments||[]).reduce(function(x,p){ return x + (p.amt||0); }, 0); }, 0);
+  var out = won.reduce(function(a,q){
+    var paid = (q.payments||[]).reduce(function(x,p){ return x + (p.amt||0); }, 0);
+    return a + Math.max(0, (q.price||0) - paid); }, 0);
+
+  $('kpis').innerHTML =
+    kpi('Quotes Sent', sent.length, qs.length + ' total') +
+    kpi('Approved', won.length, rate + '% close rate', 'hi') +
+    kpi('Won', money(wonAmt), 'signed work', 'hi') +
+    kpi('Collected', money(got), 'deposits + payments', 'acc') +
+    kpi('Outstanding', money(out), 'still to collect', 'warn');
+
+  $('recent').innerHTML = table(qs.slice().reverse().slice(0,8));
+}
+function kpi(l, v, s, cls){
+  return '<div class="kpi ' + (cls||'') + '"><div class="kpi-l">' + l + '</div>' +
+         '<div class="kpi-v">' + v + '</div><div class="kpi-s">' + s + '</div></div>';
+}
+
+function renderQuotes(){
+  var f = $('filter').value;
+  var list = DB.quotes.slice().reverse();
+  if (f !== 'all') list = list.filter(function(q){ return q.status === f; });
+  $('qlist').innerHTML = table(list);
+}
+
+function table(list){
+  if (!list.length) return '<div class="empty"><h3>Nothing here yet</h3><p>Build your first quote and it shows up here.</p></div>';
+  var h = '<table><thead><tr><th>#</th><th>Customer</th><th>Work</th><th>Status</th>' +
+          '<th class="num">Price</th><th class="num">Collected</th><th>Date</th></tr></thead><tbody>';
+  list.forEach(function(q){
+    var paid = (q.payments||[]).reduce(function(a,p){ return a + (p.amt||0); }, 0);
+    h += '<tr data-q="' + q.id + '">' +
+      '<td class="num">' + q.num + '</td>' +
+      '<td><b>' + esc(q.cust.name || 'No name') + '</b><br><span style="font-size:.76rem;color:var(--ink-dim)">' + esc(q.cust.addr||'') + '</span></td>' +
+      '<td>' + esc((TRADES[q.trade]||{}).name || q.trade) + '</td>' +
+      '<td><span class="pill p-' + q.status + '">' + q.status + '</span></td>' +
+      '<td class="num">' + money(q.price) + '</td>' +
+      '<td class="num">' + (paid ? money(paid) : '—') + '</td>' +
+      '<td class="num">' + niceDate(q.created) + '</td></tr>';
+  });
+  return h + '</tbody></table>';
+}
+
+/* ═══════════ SETUP ═══════════ */
+function renderSetup(){
+  $('s_co').value = DB.co.name;  $('s_phone').value = DB.co.phone;
+  $('s_email').value = DB.co.email; $('s_lic').value = DB.co.lic;
+  $('s_profit').value = DB.def.profit; $('s_dep').value = DB.def.deposit;
+  $('s_waste').value = DB.def.waste;   $('s_terms').value = DB.def.terms;
+  $('logo_prev').src = DB.co.logo || transparentPx();
+
+  var tg = $('trades'); tg.innerHTML = '';
+  Object.keys(TRADES).forEach(function(t){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'trade' + (DB.trade === t ? ' on' : '');
+    b.dataset.t = t;
+    b.innerHTML = '<span class="ic">' + TRADES[t].icon + '</span>' + TRADES[t].name;
+    tg.appendChild(b);
+  });
+  $('rb_title').textContent = 'Your Prices — ' + TRADES[DB.trade].name;
+  renderCatalog();
+}
+function transparentPx(){ return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='; }
+
+function renderCatalog(){
+  var box = $('catalog'); box.innerHTML = '';
+  var head = document.createElement('div');
+  head.className = 'li li-hd';
+  head.style.gridTemplateColumns = '1fr 128px 92px 30px';
+  head.innerHTML = '<div>Item</div><div>How It Is Counted</div><div style="text-align:right">Your Cost</div><div></div>';
+  box.appendChild(head);
+
+  DB.cat[DB.trade].forEach(function(it, i){
+    var row = document.createElement('div');
+    row.className = 'li';
+    row.style.gridTemplateColumns = '1fr 128px 92px 30px';
+    var opts = BASES.map(function(b){
+      return '<option value="'+b[0]+'"' + (it.b===b[0]?' selected':'') + '>'+b[1]+'</option>'; }).join('');
+    row.innerHTML =
+      '<div><input type="text" value="'+esc(it.n)+'" data-ci="'+i+'" data-cf="n" aria-label="Item name"></div>' +
+      '<div><select data-ci="'+i+'" data-cf="b" aria-label="How it is counted">'+opts+'</select></div>' +
+      '<div class="money-in"><span>$</span><input type="number" value="'+it.r+'" data-ci="'+i+'" data-cf="r" step="any" inputmode="decimal" aria-label="Your cost"></div>' +
+      '<div><button class="li-del" type="button" data-cdel="'+i+'" aria-label="Remove">&times;</button></div>';
+    box.appendChild(row);
+  });
+}
+
+/* ═══════════ CLOSE SCREEN ═══════════ */
+function openCloser(){
+  recalc();
+  if (!draft.cust.name){ toast('Add the customer name first'); $('c_name').focus(); return; }
+  if (draft._price <= 0){ toast('Add the job size first'); $('j_len').focus(); return; }
+  $('cl_name').textContent = draft.cust.name;
+  $('cl_addr').textContent = draft.cust.addr || '';
+  $('cl_price').textContent = money(draft._price);
+  var d = jobDims();
+  $('cl_sub').textContent = d.area > 0 ? Math.round(d.area) + ' sq ft · ' + money2(draft._price/d.area) + ' / sq ft' : '';
+  $('cl_dep').textContent = money(draft._dep);
+  $('cl_depsub').textContent = draft.deposit + '% deposit · balance ' + money(draft._price - draft._dep) + ' on completion';
+  $('closer').classList.add('on');
+  document.body.style.overflow = 'hidden';
+  setTimeout(sizeSig, 60);
+}
+function closeCloser(){
+  $('closer').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+/* signature pad */
+var sigCtx, drawing = false, sigDirty = false;
+function sizeSig(){
+  var c = $('sigpad');
+  var r = c.getBoundingClientRect();
+  if (!r.width) return;
+  var dpr = window.devicePixelRatio || 1;
+  var data = sigDirty ? c.toDataURL() : null;
+  c.width = r.width * dpr; c.height = r.height * dpr;
+  sigCtx = c.getContext('2d');
+  sigCtx.scale(dpr, dpr);
+  sigCtx.lineWidth = 2.2; sigCtx.lineCap = 'round'; sigCtx.lineJoin = 'round';
+  sigCtx.strokeStyle = '#241C17';
+  if (data){ var img = new Image(); img.onload = function(){ sigCtx.drawImage(img,0,0,r.width,r.height); }; img.src = data; }
+}
+function sigPos(e){
+  var r = $('sigpad').getBoundingClientRect();
+  return { x:e.clientX - r.left, y:e.clientY - r.top };
+}
+function initSig(){
+  var c = $('sigpad');
+  c.addEventListener('pointerdown', function(e){
+    drawing = true; sigDirty = true; c.setPointerCapture(e.pointerId);
+    var p = sigPos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x, p.y); e.preventDefault();
+  });
+  c.addEventListener('pointermove', function(e){
+    if (!drawing) return;
+    var p = sigPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); e.preventDefault();
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+    c.addEventListener(ev, function(){ drawing = false; });
+  });
+  $('sig_clear').onclick = function(){
+    var r = c.getBoundingClientRect();
+    sigCtx.clearRect(0,0,r.width,r.height); sigDirty = false;
+  };
+}
+
+/* ═══════════ SAVING QUOTES ═══════════ */
+function commitDraft(status, extra){
+  formToDraft(); recalc();
+  draft.status = status;
+  draft.cost = draft._cost; draft.price = draft._price; draft.depAmt = draft._dep;
+  draft.area = jobDims().area;
+  if (sigDirty) draft.sig = $('sigpad').toDataURL('image/png');
+  if (extra) for (var k in extra) draft[k] = extra[k];
+
+  var i = DB.quotes.findIndex(function(q){ return q.id === draft.id; });
+  if (i >= 0) DB.quotes[i] = draft;
+  else { DB.quotes.push(draft); DB.seq = Math.max(DB.seq, draft.num) + 1; }
+  save();
+}
+function resetDraft(){
+  draft = newDraft(); sigDirty = false;
+  var c = $('sigpad');
+  if (sigCtx && c){ var r = c.getBoundingClientRect(); sigCtx.clearRect(0,0,r.width,r.height); }
+  draftToForm();
+}
+
+/* ═══════════ QUOTE / INVOICE DOC ═══════════ */
+function openQuote(id){
+  var q = DB.quotes.find(function(x){ return x.id === id; });
+  if (!q) return;
+  var paid = (q.payments||[]).reduce(function(a,p){ return a + (p.amt||0); }, 0);
+  var due = Math.max(0, (q.price||0) - paid);
+  var isInv = ['invoiced','paid'].indexOf(q.status) >= 0;
+
+  $('modal_t').textContent = (isInv ? 'Invoice #' : 'Quote #') + q.num;
+
+  var rows = (q.lines||[]).filter(function(l){ return l.on && l._t > 0; }).map(function(l){
+    return '<tr><td>' + esc(l.n) + '</td><td class="num">' + (Math.round((l._q||0)*100)/100) + ' ' + esc(l.u) + '</td></tr>';
+  }).join('');
+
+  var acts = '';
+  if (q.status === 'draft')    acts = act(q.id,'sent','Mark Sent','') + act(q.id,'approved','Mark Approved','go');
+  if (q.status === 'sent')     acts = act(q.id,'approved','Mark Approved','go') + act(q.id,'lost','Mark Lost','dark');
+  if (q.status === 'approved') acts = act(q.id,'invoiced','Send Invoice','') + payBtn(q.id);
+  if (q.status === 'invoiced') acts = payBtn(q.id) + act(q.id,'paid','Mark Paid In Full','go');
+  if (q.status === 'paid')     acts = '<div class="note">Paid in full. Nice work.</div>';
+
+  $('modal_b').innerHTML =
+    '<div class="doc">' +
+      '<div class="doc-hd"><div>' +
+        (DB.co.logo ? '<img src="'+DB.co.logo+'" style="height:38px;margin-bottom:5px">' : '') +
+        '<div class="doc-co">' + esc(DB.co.name || 'Your Company') + '</div>' +
+        '<div style="font-size:.74rem">' + esc(DB.co.phone||'') + (DB.co.email?' · '+esc(DB.co.email):'') + '</div>' +
+        (DB.co.lic ? '<div style="font-size:.74rem">' + esc(DB.co.lic) + '</div>' : '') +
+      '</div><div class="doc-meta">' +
+        '<b>' + (isInv ? 'INVOICE' : 'QUOTE') + ' #' + q.num + '</b><br>' + niceDate(q.created) +
+      '</div></div>' +
+      '<div><b>' + esc(q.cust.name||'') + '</b><br>' +
+        '<span style="font-size:.82rem">' + esc(q.cust.addr||'') + (q.cust.phone?'<br>'+esc(q.cust.phone):'') + '</span></div>' +
+      '<h3>' + esc((TRADES[q.trade]||{}).name||'') + ' — ' + Math.round(q.area||0) + ' sq ft</h3>' +
+      (rows ? '<table><tbody>' + rows + '</tbody></table>' : '') +
+      (q.notes ? '<h3>Scope</h3><div class="doc-scope">' + esc(q.notes) + '</div>' : '') +
+      '<div class="doc-tot">' +
+        '<div class="r big"><span>Total</span><span>' + money(q.price) + '</span></div>' +
+        '<div class="r"><span>Deposit (' + q.deposit + '%)</span><span>' + money(q.depAmt) + '</span></div>' +
+        (paid ? '<div class="r"><span>Paid to date</span><span>-' + money(paid) + '</span></div>' : '') +
+        '<div class="r big"><span>' + (paid ? 'Balance Due' : 'Due') + '</span><span>' + money(paid ? due : q.price) + '</span></div>' +
+      '</div>' +
+      (q.sig ? '<div class="doc-sig"><div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#666">Approved by ' + esc(q.cust.name||'') + '</div><img src="'+q.sig+'" alt="Signature"></div>' : '') +
+    '</div>' +
+    '<div class="btn-row"><button class="btn ghost" type="button" onclick="window.print()">Print / PDF</button>' +
+    '<button class="btn ghost" type="button" data-send="'+q.id+'">Send</button></div>' +
+    (acts ? '<div class="btn-row">' + acts + '</div>' : '') +
+    '<button class="btn dark" type="button" data-del="'+q.id+'">Delete Quote</button>';
+
+  $('scrim').classList.add('on'); $('modal').classList.add('on');
+}
+function act(id, st, label, cls){
+  return '<button class="btn ' + (cls||'ghost') + '" type="button" data-set="' + id + '|' + st + '">' + label + '</button>';
+}
+function payBtn(id){ return '<button class="btn ghost" type="button" data-pay="'+id+'">Record Payment</button>'; }
+function closeModal(){ $('scrim').classList.remove('on'); $('modal').classList.remove('on'); }
+
+/* send via the phone's own mail app */
+function sendQuote(q){
+  var isInv = ['invoiced','paid'].indexOf(q.status) >= 0;
+  var body =
+    (DB.co.name ? DB.co.name + '\n' : '') +
+    (isInv ? 'Invoice' : 'Quote') + ' #' + q.num + '\n' +
+    (q.cust.name ? 'Prepared for: ' + q.cust.name + '\n' : '') +
+    (q.cust.addr ? q.cust.addr + '\n' : '') + '\n' +
+    (TRADES[q.trade]||{}).name + ' — approximately ' + Math.round(q.area||0) + ' sq ft\n\n' +
+    (q.notes ? q.notes + '\n\n' : '') +
+    '-----------------------------\n' +
+    'Total:   ' + money(q.price) + '\n' +
+    'Deposit: ' + money(q.depAmt) + ' (' + q.deposit + '% to get on the schedule)\n' +
+    '-----------------------------\n\n' +
+    (DB.co.phone ? 'Questions? ' + DB.co.phone + '\n' : '');
+  var subj = (isInv ? 'Invoice' : 'Quote') + ' #' + q.num + (DB.co.name ? ' from ' + DB.co.name : '');
+  window.location.href = 'mailto:' + encodeURIComponent(q.cust.email||'') +
+    '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+}
+
+/* ═══════════ WIRING ═══════════ */
+load();
+
+$('top_co').textContent = DB.co.name || '';
+if (DB.co.logo){ $('top_logo').src = DB.co.logo; $('top_logo').classList.remove('hidden'); }
+
+// trade dropdown on the quote form
+Object.keys(TRADES).forEach(function(t){
+  var o = document.createElement('option'); o.value = t; o.textContent = TRADES[t].name;
+  $('j_trade').appendChild(o);
+});
+
+document.querySelectorAll('.nb').forEach(function(b){ b.onclick = function(){ show(b.dataset.v); }; });
+document.querySelectorAll('[data-go]').forEach(function(b){ b.onclick = function(){ show(b.dataset.go); }; });
+
+// live recalc on the quote form
+['c_name','c_phone','c_email','c_addr','j_len','j_wid','j_sqft','j_thk','j_crew','j_hrs',
+ 'j_profit','j_deposit','j_notes'].forEach(function(id){
+  $(id).addEventListener('input', recalc);
+});
+$('j_trade').addEventListener('change', function(){
+  draft.trade = $('j_trade').value;
+  draft.lines = DB.cat[draft.trade].map(function(i){ var c = copy(i); c.on = true; return c; });
+  renderLines(); recalc();
+});
+
+// line item edits
+$('lines').addEventListener('input', function(e){
+  var t = e.target, i = t.dataset.i, f = t.dataset.f;
+  if (i == null) return;
+  var line = draft.lines[i];
+  if (f === 'on') { line.on = t.checked; t.closest('.li').classList.toggle('off', !t.checked); }
+  if (f === 'r')  line.r = parseFloat(t.value) || 0;
+  if (f === 'q')  line.q = parseFloat(t.value) || 0;
+  recalc();
+});
+$('add_line').onclick = function(){
+  draft.lines.push({ n:'New Item', b:'manual', u:'ea', r:0, q:1, on:true });
+  renderLines(); recalc();
+};
+
+$('btn_save').onclick = function(){
+  if (!$('c_name').value.trim()){ toast('Add the customer name first'); $('c_name').focus(); return; }
+  commitDraft('draft'); toast('Draft saved'); resetDraft(); show('quotes');
+};
+$('btn_discard').onclick = function(){
+  if (confirm('Throw away this quote?')){ resetDraft(); toast('Discarded'); }
+};
+$('btn_close').onclick = openCloser;
+$('qbar_btn').onclick = openCloser;
+$('close_back').onclick = closeCloser;
+
+$('cl_approve').onclick = function(){
+  var dep = draft._dep;
+  var got = prompt('How much are you collecting right now?', Math.round(dep));
+  if (got === null) return;
+  var amt = parseFloat(got) || 0;
+  commitDraft('approved', {
+    approved: today(),
+    payments: amt > 0 ? [{ amt:amt, note:'Deposit', date:today() }] : []
+  });
+  toast(amt > 0 ? 'Closed — ' + money(amt) + ' collected' : 'Closed');
+  closeCloser(); resetDraft(); show('dash');
+};
+$('cl_send').onclick = function(){
+  commitDraft('sent', { sent:today() });
+  var q = DB.quotes[DB.quotes.length-1];
+  sendQuote(q); toast('Quote saved as sent');
+  closeCloser(); resetDraft(); show('quotes');
+};
+$('cl_lost').onclick = function(){
+  commitDraft('lost'); toast('Marked lost'); closeCloser(); resetDraft(); show('quotes');
+};
+
+// pipeline row clicks
+['recent','qlist'].forEach(function(id){
+  $(id).addEventListener('click', function(e){
+    var tr = e.target.closest('tr[data-q]');
+    if (tr) openQuote(tr.dataset.q);
+  });
+});
+$('filter').addEventListener('change', renderQuotes);
+
+// modal actions
+$('modal_x').onclick = closeModal;
+$('scrim').onclick = closeModal;
+$('modal_b').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if (!b) return;
+  var q;
+  if (b.dataset.set){
+    var parts = b.dataset.set.split('|');
+    q = DB.quotes.find(function(x){ return x.id === parts[0]; });
+    if (q){
+      q.status = parts[1];
+      if (parts[1] === 'sent') q.sent = today();
+      if (parts[1] === 'approved') q.approved = today();
+      if (parts[1] === 'paid'){
+        var paid = (q.payments||[]).reduce(function(a,p){ return a + (p.amt||0); }, 0);
+        var rest = Math.max(0, (q.price||0) - paid);
+        if (rest > 0){ q.payments = (q.payments||[]).concat([{ amt:rest, note:'Final payment', date:today() }]); }
+      }
+      save(); openQuote(q.id); renderDash(); renderQuotes(); toast('Updated');
+    }
+  }
+  if (b.dataset.pay){
+    q = DB.quotes.find(function(x){ return x.id === b.dataset.pay; });
+    if (q){
+      var paid2 = (q.payments||[]).reduce(function(a,p){ return a + (p.amt||0); }, 0);
+      var v = prompt('Payment amount', Math.round(Math.max(0,(q.price||0) - paid2)));
+      if (v === null) return;
+      var amt2 = parseFloat(v) || 0;
+      if (amt2 > 0){
+        q.payments = (q.payments||[]).concat([{ amt:amt2, note:'Payment', date:today() }]);
+        var np = paid2 + amt2;
+        if (np >= (q.price||0) - 0.5) q.status = 'paid';
+        save(); openQuote(q.id); renderDash(); renderQuotes(); toast(money(amt2) + ' recorded');
+      }
+    }
+  }
+  if (b.dataset.send){
+    q = DB.quotes.find(function(x){ return x.id === b.dataset.send; });
+    if (q){
+      if (q.status === 'draft'){ q.status = 'sent'; q.sent = today(); save(); }
+      sendQuote(q);
+    }
+  }
+  if (b.dataset.del){
+    if (confirm('Delete this quote for good?')){
+      DB.quotes = DB.quotes.filter(function(x){ return x.id !== b.dataset.del; });
+      save(); closeModal(); renderDash(); renderQuotes(); toast('Deleted');
+    }
+  }
+});
+
+// setup wiring
+[['s_co','name'],['s_phone','phone'],['s_email','email'],['s_lic','lic']].forEach(function(p){
+  $(p[0]).addEventListener('input', function(){
+    DB.co[p[1]] = $(p[0]).value; save();
+    $('top_co').textContent = DB.co.name || '';
+  });
+});
+[['s_profit','profit'],['s_dep','deposit'],['s_waste','waste']].forEach(function(p){
+  $(p[0]).addEventListener('input', function(){ DB.def[p[1]] = parseFloat($(p[0]).value) || 0; save(); });
+});
+$('s_terms').addEventListener('input', function(){ DB.def.terms = $('s_terms').value; save(); });
+
+$('trades').addEventListener('click', function(e){
+  var b = e.target.closest('.trade'); if (!b) return;
+  DB.trade = b.dataset.t; save(); renderSetup();
+  if (draft && !draft.cust.name){ draft = newDraft(); draftToForm(); }
+  toast(TRADES[DB.trade].name + ' loaded');
+});
+$('catalog').addEventListener('input', function(e){
+  var t = e.target, i = t.dataset.ci, f = t.dataset.cf;
+  if (i == null) return;
+  var it = DB.cat[DB.trade][i];
+  if (f === 'n') it.n = t.value;
+  if (f === 'r') it.r = parseFloat(t.value) || 0;
+  if (f === 'b'){ it.b = t.value; if (it.b === 'manual' && it.q == null) it.q = 0; }
+  save();
+});
+$('catalog').addEventListener('change', function(e){
+  if (e.target.dataset.cf === 'b') save();
+});
+$('catalog').addEventListener('click', function(e){
+  var b = e.target.closest('[data-cdel]'); if (!b) return;
+  DB.cat[DB.trade].splice(parseInt(b.dataset.cdel), 1); save(); renderCatalog();
+});
+$('add_cat').onclick = function(){
+  DB.cat[DB.trade].push({ n:'New Item', b:'manual', u:'ea', r:0, q:0 });
+  save(); renderCatalog();
+};
+$('reset_cat').onclick = function(){
+  if (!confirm('Put the ' + TRADES[DB.trade].name + ' prices back to the starting numbers?')) return;
+  DB.cat[DB.trade] = TRADES[DB.trade].items.map(function(i){ return copy(i); });
+  save(); renderCatalog(); toast('Reset');
+};
+
+// logo
+$('logo_pick').onclick = function(){ $('logo_file').click(); };
+$('logo_clr').onclick = function(){
+  DB.co.logo = ''; save();
+  $('logo_prev').src = transparentPx();
+  $('top_logo').classList.add('hidden');
+};
+$('logo_file').onchange = function(e){
+  var f = e.target.files && e.target.files[0]; if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function(ev){
+    DB.co.logo = ev.target.result; save();
+    $('logo_prev').src = DB.co.logo;
+    $('top_logo').src = DB.co.logo; $('top_logo').classList.remove('hidden');
+  };
+  rd.readAsDataURL(f);
+};
+
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape') return;
+  if ($('modal').classList.contains('on')) closeModal();
+  else if ($('closer').classList.contains('on')) closeCloser();
+});
+window.addEventListener('resize', function(){ if ($('closer').classList.contains('on')) sizeSig(); });
+
+initSig();
+draft = newDraft();
+draftToForm();
+show('dash');
+</script>
+</body>
+</html>
