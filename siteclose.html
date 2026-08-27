@@ -228,6 +228,37 @@ tbody tr:hover{background:var(--panel-2)}
 #logo_file{display:none}
 .hidden{display:none !important}
 
+/* on/off switches */
+.tg{display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding:12px 0;border-top:1px solid var(--line)}
+.tg:first-child{border-top:0}
+.tg-t{font-size:.95rem;font-weight:600;line-height:1.25}
+.tg-d{font-size:.76rem;color:var(--ink-dim);line-height:1.35;margin-top:2px}
+.sw{position:relative;width:52px;height:30px;flex:none}
+.sw input{width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.sw i{position:absolute;inset:0;background:#C9BCB0;border-radius:20px;
+  transition:background .18s;pointer-events:none}
+.sw i::after{content:'';position:absolute;left:3px;top:3px;width:24px;height:24px;
+  background:#fff;border-radius:50%;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw input:checked + i{background:var(--go)}
+.sw input:checked + i::after{transform:translateX(22px)}
+.sw input:focus-visible + i{outline:2px solid var(--accent);outline-offset:2px}
+
+/* job photos */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+.pcell{position:relative;border:1px solid var(--line);border-radius:9px;overflow:hidden;
+  background:var(--panel-2)}
+.pcell img{display:block;width:100%;height:96px;object-fit:cover}
+.pcell input{width:100%;border:0;border-top:1px solid var(--line);border-radius:0;
+  font-size:.76rem;padding:7px 8px}
+.pcell .rm{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:50%;
+  border:0;background:rgba(20,16,13,.78);color:#fff;font-size:1rem;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pcell .rm:hover{background:var(--stop)}
+.pempty{grid-column:1/-1;text-align:center;color:var(--ink-dim);font-size:.88rem;padding:16px}
+.swatch{width:42px;height:42px;padding:0;border:1px solid var(--line);border-radius:8px;
+  cursor:pointer;background:none}
+
 /* STICKY QUOTE BAR */
 .qbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;
   background:linear-gradient(150deg,var(--accent),var(--accent-deep));color:#fff;
@@ -335,6 +366,16 @@ tbody tr:hover{background:var(--panel-2)}
     </div>
 
     <div class="card">
+      <div class="card-hd"><h2>Photos</h2>
+        <button class="btn sm ghost" type="button" id="add_photo">+ Add Photo</button></div>
+      <div class="card-bd">
+        <div class="hint">Pictures of the job go on the quote your customer sees.</div>
+        <div class="pgrid" id="pgrid"></div>
+        <input type="file" id="photo_file" accept="image/*" multiple class="hidden">
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-hd"><h2>Your Price</h2></div>
       <div class="card-bd">
         <div class="g2">
@@ -407,6 +448,24 @@ tbody tr:hover{background:var(--panel-2)}
         <div class="hint">These are <b>your costs</b> — what you pay. Your profit gets added on top of these, so the customer never sees them.</div>
         <div id="catalog"></div>
         <button class="btn ghost" type="button" id="reset_cat">Reset This Trade To Defaults</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><h2>What The Customer Sees</h2></div>
+      <div class="card-bd">
+        <div class="hint">This changes the quote you hand your customer. Your costs,
+          your rates and your profit are never on it either way.</div>
+        <div id="doc_toggles"></div>
+        <div style="display:flex;align-items:center;gap:12px;padding-top:12px;border-top:1px solid var(--line)">
+          <div style="flex:1"><div class="tg-t">Your Colour</div>
+            <div class="tg-d">Used on the customer's quote</div></div>
+          <input type="color" class="swatch" id="d_accent" aria-label="Accent colour">
+        </div>
+        <div><label for="d_terms">Terms</label>
+          <textarea id="d_terms" placeholder="Shows near the bottom of the customer's quote."></textarea></div>
+        <div><label for="d_footer">Last Line</label>
+          <input type="text" id="d_footer" placeholder="Thanks for your business."></div>
       </div>
     </div>
 
@@ -541,6 +600,8 @@ function blankDB(){
     co:{ name:'', phone:'', email:'', lic:'', logo:'' },
     trade:'concrete',
     cat:cat,
+    doc:{ show_lines:true, show_qty:true, show_labor:false, show_scope:true,
+          show_license:true, show_photos:true, accent:'#D4551C', terms:'', footer:'' },
     def:{ profit:20, deposit:15, waste:10,
           terms:'Site preparation, forms, reinforcement, place and finish.\nAny excess soil is piled on site per the homeowner.' },
     quotes:[],
@@ -557,6 +618,7 @@ function load(){
       if (s && typeof s === 'object'){
         if (s.co)  for (var k in s.co)  DB.co[k] = s.co[k];
         if (s.def) for (var d in s.def) DB.def[d] = s.def[d];
+        if (s.doc) for (var o in s.doc) DB.doc[o] = s.doc[o];
         if (s.cat) for (var c in s.cat) if (DB.cat[c]) DB.cat[c] = s.cat[c];
         if (s.trade && TRADES[s.trade]) DB.trade = s.trade;
         if (Array.isArray(s.quotes)) DB.quotes = s.quotes;
@@ -565,7 +627,10 @@ function load(){
     }
   }catch(e){}
 }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){} }
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(DB)); return true; }
+  catch(e){ return false; }   // storage full
+}
 
 /* ═══════════ HELPERS ═══════════ */
 function $(id){ return document.getElementById(id); }
@@ -632,7 +697,7 @@ function newDraft(){
     lines:DB.cat[DB.trade].map(function(i){ return copy(i); }).map(function(i){ i.on = true; return i; }),
     profit:DB.def.profit, deposit:DB.def.deposit,
     notes:DB.def.terms, status:'draft', created:today(),
-    sig:'', payments:[] };
+    sig:'', payments:[], photos:[] };
 }
 
 function draftToForm(){
@@ -648,6 +713,7 @@ function draftToForm(){
   var st = $('nq_status'); st.className = 'pill p-' + draft.status;
   st.textContent = draft.status;
   renderLines();
+  renderPhotos();
   recalc();
 }
 function formToDraft(){
@@ -781,6 +847,97 @@ function table(list){
   return h + '</tbody></table>';
 }
 
+/* ═══ WHAT THE CUSTOMER SEES ═══ */
+var DOCFIELDS = [
+  {k:'show_lines',   t:'Itemised list',  d:'Show what the job is made of'},
+  {k:'show_qty',     t:'Quantities',     d:'Yards, tons and bars beside each item'},
+  {k:'show_labor',   t:'Labour lines',   d:'Off by default \u2014 hours invite haggling'},
+  {k:'show_scope',   t:'Scope of work',  d:'Your written description of the job'},
+  {k:'show_license', t:'Licence number', d:'Your ROC number in the letterhead'},
+  {k:'show_photos',  t:'Photos',         d:'Job pictures you attach to the quote'}
+];
+
+function renderDocToggles(){
+  var box = $('doc_toggles'); box.innerHTML = '';
+  DOCFIELDS.forEach(function(f){
+    var row = document.createElement('div');
+    row.className = 'tg';
+    row.innerHTML =
+      '<div><div class="tg-t">' + f.t + '</div><div class="tg-d">' + f.d + '</div></div>' +
+      '<label class="sw"><input type="checkbox" ' + (DB.doc[f.k] ? 'checked' : '') +
+      ' data-doc="' + f.k + '" aria-label="' + f.t + '"><i></i></label>';
+    box.appendChild(row);
+  });
+}
+
+/* ═══ JOB PHOTOS ═══
+   Scaled down before storing: a phone photo is several megabytes and would
+   fill the browser's storage allowance within a couple of jobs. */
+var MAX_PX = 1400, JPEG_Q = 0.72;
+
+function shrink(file){
+  return new Promise(function(resolve, reject){
+    var rd = new FileReader();
+    rd.onerror = function(){ reject(new Error('read')); };
+    rd.onload = function(ev){
+      var img = new Image();
+      img.onerror = function(){ reject(new Error('decode')); };
+      img.onload = function(){
+        var scale = Math.min(1, MAX_PX / Math.max(img.width, img.height));
+        var cv = document.createElement('canvas');
+        cv.width  = Math.max(1, Math.round(img.width  * scale));
+        cv.height = Math.max(1, Math.round(img.height * scale));
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        resolve(cv.toDataURL('image/jpeg', JPEG_Q));
+      };
+      img.src = ev.target.result;
+    };
+    rd.readAsDataURL(file);
+  });
+}
+
+function renderPhotos(){
+  var box = $('pgrid'); box.innerHTML = '';
+  if (!draft || !draft.photos.length){
+    box.innerHTML = '<div class="pempty">No photos yet.</div>';
+    return;
+  }
+  draft.photos.forEach(function(ph, i){
+    var cell = document.createElement('div');
+    cell.className = 'pcell';
+    cell.innerHTML =
+      '<img src="' + ph.src + '" alt="Job photo ' + (i+1) + '">' +
+      '<button class="rm" type="button" data-rm="' + i + '" aria-label="Remove photo">\u00d7</button>' +
+      '<input type="text" value="' + esc(ph.caption || '') + '" data-cap="' + i + '" placeholder="Caption">';
+    box.appendChild(cell);
+  });
+}
+
+var PHOTO_BUDGET = 3500000;   // ~3.5 MB of photos per quote
+
+function photoBytes(){
+  return draft.photos.reduce(function(a, p){ return a + p.src.length; }, 0);
+}
+
+function addPhotos(files){
+  var queue = Array.prototype.slice.call(files);
+  var step = function(){
+    if (!queue.length){ renderPhotos(); return; }
+    shrink(queue.shift())
+      .then(function(src){
+        if (photoBytes() + src.length > PHOTO_BUDGET){
+          toast('That is as many photos as will fit on this quote');
+          queue.length = 0;
+          return;
+        }
+        draft.photos.push({ src:src, caption:'' });
+      })
+      .catch(function(){ toast('Could not read that picture'); })
+      .then(step);
+  };
+  step();
+}
+
 /* ═══════════ SETUP ═══════════ */
 function renderSetup(){
   $('s_co').value = DB.co.name;  $('s_phone').value = DB.co.phone;
@@ -798,6 +955,11 @@ function renderSetup(){
     b.innerHTML = '<span class="ic">' + TRADES[t].icon + '</span>' + TRADES[t].name;
     tg.appendChild(b);
   });
+  $('d_accent').value = DB.doc.accent || '#D4551C';
+  $('d_terms').value  = DB.doc.terms  || '';
+  $('d_footer').value = DB.doc.footer || '';
+  renderDocToggles();
+
   $('rb_title').textContent = 'Your Prices — ' + TRADES[DB.trade].name;
   renderCatalog();
 }
@@ -897,7 +1059,15 @@ function commitDraft(status, extra){
   var i = DB.quotes.findIndex(function(q){ return q.id === draft.id; });
   if (i >= 0) DB.quotes[i] = draft;
   else { DB.quotes.push(draft); DB.seq = Math.max(DB.seq, draft.num) + 1; }
-  save();
+
+  if (!save()){
+    // out of room: keep the quote, drop its photos rather than lose the job
+    var kept = draft.photos.length;
+    draft.photos = [];
+    if (i >= 0) DB.quotes[i] = draft; else DB.quotes[DB.quotes.length-1] = draft;
+    save();
+    if (kept) toast('Saved, but this device had no room for the photos');
+  }
 }
 function resetDraft(){
   draft = newDraft(); sigDirty = false;
@@ -916,9 +1086,25 @@ function openQuote(id){
 
   $('modal_t').textContent = (isInv ? 'Invoice #' : 'Quote #') + q.num;
 
-  var rows = (q.lines||[]).filter(function(l){ return l.on && l._t > 0; }).map(function(l){
-    return '<tr><td>' + esc(l.n) + '</td><td class="num">' + (Math.round((l._q||0)*100)/100) + ' ' + esc(l.u) + '</td></tr>';
-  }).join('');
+  var D = DB.doc;
+  var rows = !D.show_lines ? '' :
+    (q.lines||[])
+      .filter(function(l){ return l.on && l._t > 0 && (D.show_labor || l.b !== 'manhours'); })
+      .map(function(l){
+        var qty = D.show_qty
+          ? '<td class="num">' + (Math.round((l._q||0)*100)/100) + ' ' + esc(l.u) + '</td>'
+          : '<td></td>';
+        return '<tr><td>' + esc(l.n) + '</td>' + qty + '</tr>';
+      }).join('');
+
+  var pics = (D.show_photos && (q.photos||[]).length)
+    ? '<h3>Photos</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px">' +
+      q.photos.map(function(ph){
+        return '<div><img src="' + ph.src + '" alt="" style="width:100%;height:86px;object-fit:cover;border-radius:6px">' +
+          (ph.caption ? '<div style="font-size:.72rem;color:#555;padding-top:3px">' + esc(ph.caption) + '</div>' : '') +
+          '</div>';
+      }).join('') + '</div>'
+    : '';
 
   var acts = '';
   if (q.status === 'draft')    acts = act(q.id,'sent','Mark Sent','') + act(q.id,'approved','Mark Approved','go');
@@ -933,7 +1119,7 @@ function openQuote(id){
         (DB.co.logo ? '<img src="'+DB.co.logo+'" style="height:38px;margin-bottom:5px">' : '') +
         '<div class="doc-co">' + esc(DB.co.name || 'Your Company') + '</div>' +
         '<div style="font-size:.74rem">' + esc(DB.co.phone||'') + (DB.co.email?' · '+esc(DB.co.email):'') + '</div>' +
-        (DB.co.lic ? '<div style="font-size:.74rem">' + esc(DB.co.lic) + '</div>' : '') +
+        (D.show_license && DB.co.lic ? '<div style="font-size:.74rem">' + esc(DB.co.lic) + '</div>' : '') +
       '</div><div class="doc-meta">' +
         '<b>' + (isInv ? 'INVOICE' : 'QUOTE') + ' #' + q.num + '</b><br>' + niceDate(q.created) +
       '</div></div>' +
@@ -941,13 +1127,16 @@ function openQuote(id){
         '<span style="font-size:.82rem">' + esc(q.cust.addr||'') + (q.cust.phone?'<br>'+esc(q.cust.phone):'') + '</span></div>' +
       '<h3>' + esc((TRADES[q.trade]||{}).name||'') + ' — ' + Math.round(q.area||0) + ' sq ft</h3>' +
       (rows ? '<table><tbody>' + rows + '</tbody></table>' : '') +
-      (q.notes ? '<h3>Scope</h3><div class="doc-scope">' + esc(q.notes) + '</div>' : '') +
+      (D.show_scope && q.notes ? '<h3>Scope</h3><div class="doc-scope">' + esc(q.notes) + '</div>' : '') +
+      pics +
       '<div class="doc-tot">' +
         '<div class="r big"><span>Total</span><span>' + money(q.price) + '</span></div>' +
         '<div class="r"><span>Deposit (' + q.deposit + '%)</span><span>' + money(q.depAmt) + '</span></div>' +
         (paid ? '<div class="r"><span>Paid to date</span><span>-' + money(paid) + '</span></div>' : '') +
         '<div class="r big"><span>' + (paid ? 'Balance Due' : 'Due') + '</span><span>' + money(paid ? due : q.price) + '</span></div>' +
       '</div>' +
+      (D.terms ? '<h3>Terms</h3><div class="doc-scope">' + esc(D.terms) + '</div>' : '') +
+      (D.footer ? '<div style="text-align:center;font-size:.8rem;color:#666;margin-top:14px">' + esc(D.footer) + '</div>' : '') +
       (q.sig ? '<div class="doc-sig"><div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#666">Approved by ' + esc(q.cust.name||'') + '</div><img src="'+q.sig+'" alt="Signature"></div>' : '') +
     '</div>' +
     '<div class="btn-row"><button class="btn ghost" type="button" onclick="window.print()">Print / PDF</button>' +
@@ -977,6 +1166,8 @@ function sendQuote(q){
     'Total:   ' + money(q.price) + '\n' +
     'Deposit: ' + money(q.depAmt) + ' (' + q.deposit + '% to get on the schedule)\n' +
     '-----------------------------\n\n' +
+    (DB.doc.terms  ? DB.doc.terms  + '\n\n' : '') +
+    (DB.doc.footer ? DB.doc.footer + '\n\n' : '') +
     (DB.co.phone ? 'Questions? ' + DB.co.phone + '\n' : '');
   var subj = (isInv ? 'Invoice' : 'Quote') + ' #' + q.num + (DB.co.name ? ' from ' + DB.co.name : '');
   window.location.href = 'mailto:' + encodeURIComponent(q.cust.email||'') +
@@ -1128,6 +1319,31 @@ $('modal_b').addEventListener('click', function(e){
   $(p[0]).addEventListener('input', function(){ DB.def[p[1]] = parseFloat($(p[0]).value) || 0; save(); });
 });
 $('s_terms').addEventListener('input', function(){ DB.def.terms = $('s_terms').value; save(); });
+
+// what the customer sees
+$('doc_toggles').addEventListener('change', function(e){
+  var k = e.target.dataset.doc;
+  if (!k) return;
+  DB.doc[k] = e.target.checked; save();
+});
+$('d_accent').addEventListener('input', function(){ DB.doc.accent = $('d_accent').value; save(); });
+$('d_terms').addEventListener('input',  function(){ DB.doc.terms  = $('d_terms').value;  save(); });
+$('d_footer').addEventListener('input', function(){ DB.doc.footer = $('d_footer').value; save(); });
+
+// photos
+$('add_photo').onclick = function(){ $('photo_file').click(); };
+$('photo_file').onchange = function(e){
+  if (e.target.files && e.target.files.length) addPhotos(e.target.files);
+  e.target.value = '';
+};
+$('pgrid').addEventListener('click', function(e){
+  var b = e.target.closest('[data-rm]'); if (!b) return;
+  draft.photos.splice(parseInt(b.dataset.rm), 1); renderPhotos();
+});
+$('pgrid').addEventListener('input', function(e){
+  var i = e.target.dataset.cap;
+  if (i != null) draft.photos[i].caption = e.target.value;
+});
 
 $('trades').addEventListener('click', function(e){
   var b = e.target.closest('.trade'); if (!b) return;
